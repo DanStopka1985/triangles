@@ -12,9 +12,15 @@ import (
 	"time"
 )
 
-func updateTime(clock *widget.Label) {
-	formatted := time.Now().Format("Time: 03:04:05")
-	clock.SetText(formatted)
+func updateTime(l *canvas.Line) {
+	pos1 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
+	pos2 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
+	l.Position1 = pos2
+	l.Position2 = pos1
+	l.StrokeColor = color.NRGBA{0, 255, 0, 255}
+	//l.Hide()
+	//l.Show()
+	l.Refresh()
 }
 
 /*func updateLineToRandom(l *canvas.Line){
@@ -76,18 +82,23 @@ func main() {
 	linex.Position2 = pos1
 
 	ww := a.NewWindow("button")
-
+	//linex.Hide()
 	rand.Seed(time.Now().UnixNano())
 	//string(rand.Intn(2))
 	//label := widget.NewLabel("123")
-	clock := widget.NewLabel("")
+
+	//updateTime(linex)
 	button := widget.NewButton("push me", func() {
 		log.Println(123)
 
-		updateTime(clock)
+		updateTime(linex)
+		//linex.Position2 = fyne.Position{linex.Position2.X, linex.Position2.Y + 10}
+		//linex.StrokeWidth = 10
+		//linex.Hide()
+		//linex.Show()
 	})
 	//linex.Hide()
-	cont := container.NewWithoutLayout(clock, linex)
+	cont := container.NewWithoutLayout(linex)
 	ww.SetContent(button)
 	w.SetContent(cont)
 
