@@ -23,6 +23,20 @@ func updateTime(l *canvas.Line) {
 	l.Refresh()
 }
 
+func updateContent(c *fyne.Container) {
+	c.RemoveAll()
+	pos1 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
+	pos2 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
+
+	linex := canvas.NewLine(color.Black)
+	linex.StrokeColor = color.NRGBA{255, 0, 0, 255}
+	linex.StrokeWidth = 4
+	linex.Position1 = pos1
+	linex.Position2 = pos2
+	c.Add(linex)
+	c.Refresh()
+}
+
 /*func updateLineToRandom(l *canvas.Line){
 	linex := canvas.NewLine(color.Black)
 	l.po
@@ -88,17 +102,18 @@ func main() {
 	//label := widget.NewLabel("123")
 
 	//updateTime(linex)
+	cont := container.NewWithoutLayout(linex)
 	button := widget.NewButton("push me", func() {
 		log.Println(123)
 
-		updateTime(linex)
+		updateContent(cont)
 		//linex.Position2 = fyne.Position{linex.Position2.X, linex.Position2.Y + 10}
 		//linex.StrokeWidth = 10
 		//linex.Hide()
 		//linex.Show()
 	})
 	//linex.Hide()
-	cont := container.NewWithoutLayout(linex)
+
 	ww.SetContent(button)
 	w.SetContent(cont)
 
