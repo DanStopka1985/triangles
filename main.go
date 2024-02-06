@@ -12,11 +12,27 @@ import (
 	"time"
 )
 
+type triangle struct {
+	generation  int
+	coordinates [6]float32
+	power       float32
+}
+
+func genRandomTriangle() triangle {
+	var t triangle
+	for i := 0; i < 6; i++ {
+		t.coordinates[i] = rand.Float32() * 400
+	}
+	return t
+}
+
 func updateContent(c *fyne.Container) {
 	c.RemoveAll()
-	pos1 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
-	pos2 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
-	pos3 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
+	t := genRandomTriangle()
+
+	pos1 := fyne.Position{t.coordinates[0], t.coordinates[1]}
+	pos2 := fyne.Position{t.coordinates[2], t.coordinates[3]}
+	pos3 := fyne.Position{t.coordinates[4], t.coordinates[5]}
 
 	line1 := canvas.NewLine(color.Black)
 	line1.StrokeColor = color.NRGBA{255, 0, 0, 255}
