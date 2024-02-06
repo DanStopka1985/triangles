@@ -27,13 +27,29 @@ func updateContent(c *fyne.Container) {
 	c.RemoveAll()
 	pos1 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
 	pos2 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
+	pos3 := fyne.Position{rand.Float32() * 400, rand.Float32() * 400}
 
-	linex := canvas.NewLine(color.Black)
-	linex.StrokeColor = color.NRGBA{255, 0, 0, 255}
-	linex.StrokeWidth = 4
-	linex.Position1 = pos1
-	linex.Position2 = pos2
-	c.Add(linex)
+	line1 := canvas.NewLine(color.Black)
+	line1.StrokeColor = color.NRGBA{255, 0, 0, 255}
+	line1.StrokeWidth = 4
+	line1.Position1 = pos1
+	line1.Position2 = pos2
+
+	line2 := canvas.NewLine(color.Black)
+	line2.StrokeColor = color.NRGBA{255, 0, 0, 255}
+	line2.StrokeWidth = 4
+	line2.Position1 = pos2
+	line2.Position2 = pos3
+
+	line3 := canvas.NewLine(color.Black)
+	line3.StrokeColor = color.NRGBA{255, 0, 0, 255}
+	line3.StrokeWidth = 4
+	line3.Position1 = pos3
+	line3.Position2 = pos1
+
+	c.Add(line1)
+	c.Add(line2)
+	c.Add(line3)
 	c.Refresh()
 }
 
