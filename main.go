@@ -8,14 +8,9 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/google/uuid"
 	"image/color"
-	"log"
 	"math/rand"
 	"time"
 )
-
-/*const orange = color.NRGBA{255, 0, 0, 255}
-color.
-255, 65, 0*/
 
 type triangle struct {
 	generation  int
@@ -24,6 +19,8 @@ type triangle struct {
 	color       int
 	uuid        uuid.UUID
 }
+
+var aliveTs []triangle
 
 func genRandomTriangle() triangle {
 	var t triangle
@@ -43,7 +40,7 @@ func genRandomTriangles(cnt int) []triangle {
 	return r
 }
 
-func addTriangleToContainer(c *fyne.Container, t triangle) {
+func addTriangleToFyneContainer(c *fyne.Container, t triangle) {
 	pos1 := fyne.Position{t.coordinates[0], t.coordinates[1]}
 	pos2 := fyne.Position{t.coordinates[2], t.coordinates[3]}
 	pos3 := fyne.Position{t.coordinates[4], t.coordinates[5]}
@@ -71,42 +68,48 @@ func addTriangleToContainer(c *fyne.Container, t triangle) {
 	c.Add(line3)
 }
 
-func updateContent(c *fyne.Container) {
+func addNewTrianglesAndShow(c *fyne.Container) {
 	c.RemoveAll()
-	ts := genRandomTriangles(5)
+	cnt := 3
+	aliveTs = genRandomTriangles(cnt)
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < cnt; i++ {
+		addTriangleToFyneContainer(c, aliveTs[i])
+	}
 
-		addTriangleToContainer(c, ts[i])
+	c.Refresh()
+}
+
+func addNew1TriangleAndShow(c *fyne.Container) {
+	c.RemoveAll()
+	aliveTs = append(aliveTs, genRandomTriangle())
+
+	for i := 0; i < len(aliveTs); i++ {
+		addTriangleToFyneContainer(c, aliveTs[i])
 	}
 
 	c.Refresh()
 }
 
 func main() {
-	a := app.New()
-	w := a.NewWindow("Clock")
-	w.Resize(fyne.NewSize(400, 400))
-
-	linex := canvas.NewLine(color.Black)
-	linex.StrokeColor = color.NRGBA{255, 0, 0, 255}
-	linex.StrokeWidth = 4
-	pos1 := fyne.Position{0, 0}
-	pos2 := fyne.Position{100, 100}
-	linex.Position1 = pos2
-	linex.Position2 = pos1
-
-	ww := a.NewWindow("button")
 	rand.Seed(time.Now().UnixNano())
 
-	cont := container.NewWithoutLayout(linex)
-	button := widget.NewButton("push me", func() {
-		log.Println("pushed")
+	a := app.New()
+	w := a.NewWindow("triangles")
+	w.Resize(fyne.NewSize(400, 400))
 
-		updateContent(cont)
+	ww := a.NewWindow("buttons")
+
+	cont := container.NewWithoutLayout()
+	gen5randButton := widget.NewButton("gen 5 random triangles", func() {
+		addNewTrianglesAndShow(cont)
 	})
 
-	ww.SetContent(button)
+	add1RandomButton := widget.NewButton("add 1 random", func() {
+		addNew1TriangleAndShow(cont)
+	})
+
+	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton))
 	w.SetContent(cont)
 
 	//go func() {
