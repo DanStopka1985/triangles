@@ -20,7 +20,10 @@ type triangle struct {
 	uuid        uuid.UUID
 }
 
-var aliveTs []triangle
+var (
+	aliveTs []triangle
+	deathTs []triangle
+)
 
 func genRandomTriangle() triangle {
 	var t triangle
@@ -91,6 +94,20 @@ func addNew1TriangleAndShow(c *fyne.Container) {
 	c.Refresh()
 }
 
+func killLastTriangle(c *fyne.Container) {
+	c.RemoveAll()
+	copy(deathTs, aliveTs)
+	if len(aliveTs) > 0 {
+		aliveTs = aliveTs[:len(aliveTs)-1]
+	}
+
+	for i := 0; i < len(aliveTs); i++ {
+		addTriangleToFyneContainer(c, aliveTs[i])
+	}
+
+	c.Refresh()
+}
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
@@ -109,7 +126,11 @@ func main() {
 		addNew1TriangleAndShow(cont)
 	})
 
-	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton))
+	killLastTriangleButton := widget.NewButton("kill last", func() {
+		killLastTriangle(cont)
+	})
+
+	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton, killLastTriangleButton))
 	w.SetContent(cont)
 
 	//go func() {
