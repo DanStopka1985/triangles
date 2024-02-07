@@ -6,25 +6,41 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	"github.com/google/uuid"
 	"image/color"
 	"log"
 	"math/rand"
 	"time"
 )
 
+/*const orange = color.NRGBA{255, 0, 0, 255}
+color.
+255, 65, 0*/
+
 type triangle struct {
 	generation  int
 	coordinates [6]float32
 	power       float32
 	color       int
+	uuid        uuid.UUID
 }
 
 func genRandomTriangle() triangle {
 	var t triangle
+	t.uuid = uuid.New()
 	for i := 0; i < 6; i++ {
 		t.coordinates[i] = rand.Float32() * 400
 	}
 	return t
+}
+
+func genRandomTriangles(cnt int) []triangle {
+	r := make([]triangle, 0)
+	for i := 0; i < cnt; i++ {
+		t := genRandomTriangle()
+		r = append(r, t)
+	}
+	return r
 }
 
 func addTriangleToContainer(c *fyne.Container, t triangle) {
@@ -57,8 +73,11 @@ func addTriangleToContainer(c *fyne.Container, t triangle) {
 
 func updateContent(c *fyne.Container) {
 	c.RemoveAll()
+	ts := genRandomTriangles(5)
+
 	for i := 0; i < 5; i++ {
-		addTriangleToContainer(c, genRandomTriangle())
+
+		addTriangleToContainer(c, ts[i])
 	}
 
 	c.Refresh()
