@@ -8,7 +8,9 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/google/uuid"
 	"image/color"
+	"math"
 	"math/rand"
+	"sort"
 	"time"
 )
 
@@ -25,12 +27,21 @@ var (
 	deathTs []triangle
 )
 
+func abs(x float32) float32 {
+	return float32(math.Abs(float64(x)))
+}
+
 func genRandomTriangle() triangle {
 	var t triangle
 	t.uuid = uuid.New()
 	for i := 0; i < 6; i++ {
 		t.coordinates[i] = rand.Float32() * 400
 	}
+	temp1 := (t.coordinates[2] - t.coordinates[0]) * (t.coordinates[5] - t.coordinates[1])
+	temp2 := (t.coordinates[4] - t.coordinates[0]) * (t.coordinates[3] - t.coordinates[1])
+
+	t.power = float32(0.5 * abs(temp1-temp2))
+
 	return t
 }
 
@@ -107,6 +118,11 @@ func killLastTriangle(c *fyne.Container) {
 
 	c.Refresh()
 }
+func sortAliveTs() {
+	sort.Slice(aliveTs, func(i, j int) bool {
+		return aliveTs[i].power > aliveTs[j].power
+	})
+}
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -127,6 +143,7 @@ func main() {
 	})
 
 	killLastTriangleButton := widget.NewButton("kill last", func() {
+		sortAliveTs()
 		killLastTriangle(cont)
 	})
 
