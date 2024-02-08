@@ -107,6 +107,9 @@ func addNew1TriangleAndShow(c *fyne.Container) {
 }
 
 func killLastTriangle(c *fyne.Container) {
+	if len(aliveTs) == 0 {
+		return
+	}
 	c.RemoveAll()
 	deathTs = append(deathTs, aliveTs[len(aliveTs)-1])
 	log.Println(len(deathTs))
@@ -126,6 +129,16 @@ func showDeathTs(c *fyne.Container) {
 	log.Println(len(deathTs))
 	for i := 0; i < len(deathTs); i++ {
 		addTriangleToFyneContainer(c, deathTs[i])
+	}
+
+	c.Refresh()
+}
+
+func showAliveTs(c *fyne.Container) {
+	c.RemoveAll()
+
+	for i := 0; i < len(aliveTs); i++ {
+		addTriangleToFyneContainer(c, aliveTs[i])
 	}
 
 	c.Refresh()
@@ -164,7 +177,12 @@ func main() {
 		showDeathTs(cont)
 	})
 
-	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton))
+	showAliveTsButton := widget.NewButton("show alive", func() {
+		showAliveTs(cont)
+	})
+
+	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton, showAliveTsButton))
+
 	w.SetContent(cont)
 
 	//go func() {
@@ -173,6 +191,7 @@ func main() {
 	//	}
 	//}()
 
+	ww.Resize(fyne.NewSize(400, 400))
 	ww.Show()
 	w.ShowAndRun()
 }
