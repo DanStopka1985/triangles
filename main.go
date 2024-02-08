@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"github.com/google/uuid"
 	"image/color"
+	"log"
 	"math"
 	"math/rand"
 	"sort"
@@ -107,7 +108,8 @@ func addNew1TriangleAndShow(c *fyne.Container) {
 
 func killLastTriangle(c *fyne.Container) {
 	c.RemoveAll()
-	copy(deathTs, aliveTs)
+	deathTs = append(deathTs, aliveTs[len(aliveTs)-1])
+	log.Println(len(deathTs))
 	if len(aliveTs) > 0 {
 		aliveTs = aliveTs[:len(aliveTs)-1]
 	}
@@ -118,6 +120,17 @@ func killLastTriangle(c *fyne.Container) {
 
 	c.Refresh()
 }
+
+func showDeathTs(c *fyne.Container) {
+	c.RemoveAll()
+	log.Println(len(deathTs))
+	for i := 0; i < len(deathTs); i++ {
+		addTriangleToFyneContainer(c, deathTs[i])
+	}
+
+	c.Refresh()
+}
+
 func sortAliveTs() {
 	sort.Slice(aliveTs, func(i, j int) bool {
 		return aliveTs[i].power > aliveTs[j].power
@@ -147,7 +160,11 @@ func main() {
 		killLastTriangle(cont)
 	})
 
-	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton, killLastTriangleButton))
+	showDeathTsButton := widget.NewButton("show death", func() {
+		showDeathTs(cont)
+	})
+
+	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton))
 	w.SetContent(cont)
 
 	//go func() {
