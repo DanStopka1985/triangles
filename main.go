@@ -9,7 +9,6 @@ import (
 	"github.com/google/uuid"
 	"image/color"
 	"log"
-	"math"
 	"math/rand"
 	"sort"
 	"time"
@@ -28,9 +27,9 @@ var (
 	deathTs []triangle
 )
 
-func abs(x float32) float32 {
+/*func abs(x float32) float32 {
 	return float32(math.Abs(float64(x)))
-}
+}*/
 
 func genRandomTriangle() triangle {
 	var t triangle
