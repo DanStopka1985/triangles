@@ -42,3 +42,19 @@ func sortAliveTs() {
 		return aliveTs[i].power > aliveTs[j].power
 	})
 }
+
+func killLastTriangle() {
+	if len(aliveTs) == 0 {
+		return
+	}
+
+	deathTs = append(deathTs, aliveTs[len(aliveTs)-1])
+
+	if len(aliveTs) > 0 {
+		aliveTs = aliveTs[:len(aliveTs)-1]
+	}
+}
+
+func addNewRandomTriangle() {
+	aliveTs = append(aliveTs, genRandomTriangle())
+}
