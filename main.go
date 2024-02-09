@@ -25,7 +25,7 @@ func main() {
 
 	cont := container.NewWithoutLayout()
 	gen5randButton := widget.NewButton("gen 5 random triangles", func() {
-		cnt := 3
+		cnt := 102
 		for i := 0; i < cnt; i++ {
 			addNewRandomTriangle()
 		}
@@ -54,7 +54,12 @@ func main() {
 		showTs(cont, aliveTs)
 	})
 
-	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton, showAliveTsButton))
+	naturalSelectionTsButton := widget.NewButton("natural selection (100)", func() {
+		naturalSelection()
+		showTs(cont, aliveTs)
+	})
+
+	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton, showAliveTsButton, naturalSelectionTsButton))
 
 	w.SetContent(cont)
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/google/uuid"
+	"log"
 	"math/rand"
 	"sort"
 )
@@ -28,14 +29,14 @@ func genRandomTriangle() triangle {
 	return t
 }
 
-func genRandomTriangles(cnt int) []triangle {
+/*func genRandomTriangles(cnt int) []triangle {
 	r := make([]triangle, 0)
 	for i := 0; i < cnt; i++ {
 		t := genRandomTriangle()
 		r = append(r, t)
 	}
 	return r
-}
+}*/
 
 func sortAliveTs() {
 	sort.Slice(aliveTs, func(i, j int) bool {
@@ -53,6 +54,17 @@ func killLastTriangle() {
 	if len(aliveTs) > 0 {
 		aliveTs = aliveTs[:len(aliveTs)-1]
 	}
+}
+
+func naturalSelection() {
+	if len(aliveTs) <= 100 {
+		return
+	}
+
+	sortAliveTs()
+	deathTs = append(deathTs, aliveTs[101:]...)
+	aliveTs = aliveTs[:100]
+	log.Println(len(aliveTs))
 }
 
 func addNewRandomTriangle() {
