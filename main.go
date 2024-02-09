@@ -6,53 +6,15 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"github.com/google/uuid"
 	"image/color"
-	"log"
 	"math/rand"
-	"sort"
 	"time"
 )
-
-type triangle struct {
-	generation  int
-	coordinates [6]float32
-	power       float32
-	color       int
-	uuid        uuid.UUID
-}
 
 var (
 	aliveTs []triangle
 	deathTs []triangle
 )
-
-/*func abs(x float32) float32 {
-	return float32(math.Abs(float64(x)))
-}*/
-
-func genRandomTriangle() triangle {
-	var t triangle
-	t.uuid = uuid.New()
-	for i := 0; i < 6; i++ {
-		t.coordinates[i] = rand.Float32() * 400
-	}
-	temp1 := (t.coordinates[2] - t.coordinates[0]) * (t.coordinates[5] - t.coordinates[1])
-	temp2 := (t.coordinates[4] - t.coordinates[0]) * (t.coordinates[3] - t.coordinates[1])
-
-	t.power = float32(0.5 * abs(temp1-temp2))
-
-	return t
-}
-
-func genRandomTriangles(cnt int) []triangle {
-	r := make([]triangle, 0)
-	for i := 0; i < cnt; i++ {
-		t := genRandomTriangle()
-		r = append(r, t)
-	}
-	return r
-}
 
 func addTriangleToFyneContainer(c *fyne.Container, t triangle) {
 	pos1 := fyne.Position{t.coordinates[0], t.coordinates[1]}
@@ -105,48 +67,16 @@ func addNew1TriangleAndShow(c *fyne.Container) {
 	c.Refresh()
 }
 
-func killLastTriangle(c *fyne.Container) {
+func killLastTriangle() {
 	if len(aliveTs) == 0 {
 		return
 	}
-	c.RemoveAll()
+
 	deathTs = append(deathTs, aliveTs[len(aliveTs)-1])
-	log.Println(len(deathTs))
+
 	if len(aliveTs) > 0 {
 		aliveTs = aliveTs[:len(aliveTs)-1]
 	}
-
-	for i := 0; i < len(aliveTs); i++ {
-		addTriangleToFyneContainer(c, aliveTs[i])
-	}
-
-	c.Refresh()
-}
-
-func showDeathTs(c *fyne.Container) {
-	c.RemoveAll()
-	log.Println(len(deathTs))
-	for i := 0; i < len(deathTs); i++ {
-		addTriangleToFyneContainer(c, deathTs[i])
-	}
-
-	c.Refresh()
-}
-
-func showAliveTs(c *fyne.Container) {
-	c.RemoveAll()
-
-	for i := 0; i < len(aliveTs); i++ {
-		addTriangleToFyneContainer(c, aliveTs[i])
-	}
-
-	c.Refresh()
-}
-
-func sortAliveTs() {
-	sort.Slice(aliveTs, func(i, j int) bool {
-		return aliveTs[i].power > aliveTs[j].power
-	})
 }
 
 func main() {
@@ -169,15 +99,16 @@ func main() {
 
 	killLastTriangleButton := widget.NewButton("kill last", func() {
 		sortAliveTs()
-		killLastTriangle(cont)
+		killLastTriangle()
+		showTs(cont, aliveTs)
 	})
 
 	showDeathTsButton := widget.NewButton("show death", func() {
-		showDeathTs(cont)
+		showTs(cont, deathTs)
 	})
 
 	showAliveTsButton := widget.NewButton("show alive", func() {
-		showAliveTs(cont)
+		showTs(cont, aliveTs)
 	})
 
 	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton, showAliveTsButton))
