@@ -61,12 +61,12 @@ func main() {
 	})
 
 	loop20 := widget.NewButton("loop 20 generation selection", func() {
-		for i := 0; i < 20000; i++ {
+		for i := 0; i < 20; i++ {
 			createNewGeneration()
 			naturalSelection()
 		}
 		showTs(cont, aliveTs)
-		var max float32 = 0
+		max := float64(0)
 		ii := -1
 		for i := 0; i < len(aliveTs); i++ {
 			if max < aliveTs[i].power {

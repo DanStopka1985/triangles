@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/google/uuid"
+	"math"
 	"math/rand"
 	"sort"
 )
@@ -10,13 +11,13 @@ var (
 	aliveTs             []triangle
 	deathTs             []triangle
 	mutationShareChance = 1
-	maxPopulation       = 10
+	maxPopulation       = 20
 )
 
 type triangle struct {
 	generation  int
-	coordinates [6]float32
-	power       float32
+	coordinates [6]float32 //todo float64
+	power       float64
 	color       int
 	uuid        uuid.UUID
 	haveMutagen bool
@@ -35,10 +36,10 @@ begin:
 			r.coordinates[i] = p.coordinates[i]
 		} else if rand.Intn(mutationShareChance) == 0 {
 			r.haveMutagen = true
-			if rand.Intn(1) == 0 { //random mutation delta
-				r.coordinates[i] = p.coordinates[i] + rand.Float32()*5
+			if rand.Intn(2) == 1 { //random mutation delta
+				r.coordinates[i] = p.coordinates[i] + rand.Float32()*1
 			} else {
-				r.coordinates[i] = p.coordinates[i] - rand.Float32()*5
+				r.coordinates[i] = p.coordinates[i] - rand.Float32()*1
 			}
 			if r.coordinates[i] < 0 || r.coordinates[i] > 400 {
 				goto begin //if exit from window range - try new mutation
@@ -51,9 +52,9 @@ begin:
 	return r
 }
 
-func getPower(t triangle) float32 {
-	return 0.5 * abs((t.coordinates[2]-t.coordinates[0])*(t.coordinates[5]-t.coordinates[1])-
-		(t.coordinates[4]-t.coordinates[0])*(t.coordinates[3]-t.coordinates[1]))
+func getPower(t triangle) float64 {
+	return 0.5 * float64(math.Abs((float64(t.coordinates[2])-float64(t.coordinates[0]))*(float64(t.coordinates[5])-float64(t.coordinates[1]))-
+		(float64(t.coordinates[4])-float64(t.coordinates[0]))*(float64(t.coordinates[3])-float64(t.coordinates[1]))))
 }
 
 func createNewGeneration() {
@@ -72,8 +73,7 @@ func genRandomTriangle() triangle {
 		t.coordinates[i] = rand.Float32() * 400
 	}
 
-	t.power = 0.5 * abs((t.coordinates[2]-t.coordinates[0])*(t.coordinates[5]-t.coordinates[1])-
-		(t.coordinates[4]-t.coordinates[0])*(t.coordinates[3]-t.coordinates[1]))
+	t.power = getPower(t)
 	t.generation = 0
 
 	return t
