@@ -5,13 +5,9 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	"log"
 	"math/rand"
 	"time"
-)
-
-var (
-	aliveTs []triangle
-	deathTs []triangle
 )
 
 func main() {
@@ -25,7 +21,7 @@ func main() {
 
 	cont := container.NewWithoutLayout()
 	gen5randButton := widget.NewButton("gen 5 random triangles", func() {
-		cnt := 102
+		cnt := 5
 		for i := 0; i < cnt; i++ {
 			addNewRandomTriangle()
 		}
@@ -59,7 +55,38 @@ func main() {
 		showTs(cont, aliveTs)
 	})
 
-	ww.SetContent(container.NewVBox(gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton, showAliveTsButton, naturalSelectionTsButton))
+	newGenerationButton := widget.NewButton("new generation", func() {
+		createNewGeneration()
+		showTs(cont, aliveTs)
+	})
+
+	loop20 := widget.NewButton("loop 20 generation selection", func() {
+		for i := 0; i < 20000; i++ {
+			createNewGeneration()
+			naturalSelection()
+		}
+		showTs(cont, aliveTs)
+		var max float32 = 0
+		ii := -1
+		for i := 0; i < len(aliveTs); i++ {
+			if max < aliveTs[i].power {
+				max = aliveTs[i].power
+				ii = 1
+			}
+
+		}
+		log.Println(max)
+		log.Println(aliveTs[ii])
+	})
+
+	refresh := widget.NewButton("refresh", func() {
+		aliveTs = nil
+
+		showTs(cont, aliveTs)
+	})
+
+	ww.SetContent(container.NewVBox(refresh, gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton,
+		showAliveTsButton, naturalSelectionTsButton, newGenerationButton, loop20))
 
 	w.SetContent(cont)
 
