@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/rand"
 	"sort"
+	"time"
 )
 
 var (
@@ -12,6 +13,7 @@ var (
 	deathTs             []triangle
 	mutationShareChance = 1
 	maxPopulation       = 1000
+	evolutionSpeed      = time.Millisecond * 1000
 )
 
 type triangle struct {

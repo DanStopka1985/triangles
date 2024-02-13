@@ -5,14 +5,13 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"log"
 	"math/rand"
 	"time"
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-
+	Ticker := time.NewTicker(evolutionSpeed)
 	a := app.New()
 	w := a.NewWindow("triangles")
 	w.Resize(fyne.NewSize(500, 500))
@@ -21,7 +20,8 @@ func main() {
 	ww := a.NewWindow("buttons")
 
 	cont := container.NewWithoutLayout()
-	gen5randButton := widget.NewButton("gen 5 random triangles", func() {
+	genRandButton := widget.NewButton("gen random triangles", func() {
+		//Ticker.Stop()
 		cnt := 1000
 		for i := 0; i < cnt; i++ {
 			addNewRandomTriangle()
@@ -32,36 +32,36 @@ func main() {
 		showTs(cont, aliveTs)
 	})
 
-	add1RandomButton := widget.NewButton("add 1 random", func() {
+	/*	add1RandomButton := widget.NewButton("add 1 random", func() {
 		addNewRandomTriangle()
 		showTs(cont, aliveTs)
-	})
+	})*/
 
-	killLastTriangleButton := widget.NewButton("kill last", func() {
-		sortAliveTs()
-		killLastTriangle()
-		showTs(cont, aliveTs)
-	})
+	//killLastTriangleButton := widget.NewButton("kill last", func() {
+	//	sortAliveTs()
+	//	killLastTriangle()
+	//	showTs(cont, aliveTs)
+	//})
 
-	showDeathTsButton := widget.NewButton("show death", func() {
-		showTs(cont, deathTs)
-	})
+	/*	showDeathTsButton := widget.NewButton("show death", func() {
+			showTs(cont, deathTs)
+		})
 
-	showAliveTsButton := widget.NewButton("show alive", func() {
-		showTs(cont, aliveTs)
-	})
+		showAliveTsButton := widget.NewButton("show alive", func() {
+			showTs(cont, aliveTs)
+		})*/
 
-	naturalSelectionTsButton := widget.NewButton("natural selection (100)", func() {
-		naturalSelection()
-		showTs(cont, aliveTs)
-	})
+	/*	naturalSelectionTsButton := widget.NewButton("natural selection (100)", func() {
+			naturalSelection()
+			showTs(cont, aliveTs)
+		})
 
-	newGenerationButton := widget.NewButton("new generation", func() {
-		createNewGeneration()
-		showTs(cont, aliveTs)
-	})
+		newGenerationButton := widget.NewButton("new generation", func() {
+			createNewGeneration()
+			showTs(cont, aliveTs)
+		})*/
 
-	loop20 := widget.NewButton("loop 20 generation selection", func() {
+	/*	loop20 := widget.NewButton("loop 20 generation selection", func() {
 		for i := 0; i < 2000000; i++ {
 			createNewGeneration()
 			naturalSelection()
@@ -81,7 +81,7 @@ func main() {
 		log.Println(max)
 		log.Println(aliveTs[ii])
 		//showTs(cont, []triangle{aliveTs[ii]})
-	})
+	})*/
 
 	refresh := widget.NewButton("refresh", func() {
 		aliveTs = nil
@@ -89,9 +89,11 @@ func main() {
 		showTs(cont, aliveTs)
 	})
 
-	startEvolution := widget.NewButton("evolution of triangles!", func() {
+	startEvolution := widget.NewButton("start evolution", func() {
+		Ticker = time.NewTicker(evolutionSpeed)
 		go func() {
-			for range time.Tick(time.Millisecond * 500) {
+			for range Ticker.C {
+
 				createNewGeneration()
 				naturalSelection()
 				showTs(cont, aliveTs)
@@ -99,8 +101,12 @@ func main() {
 		}()
 	})
 
-	ww.SetContent(container.NewVBox(refresh, gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton,
-		showAliveTsButton, naturalSelectionTsButton, newGenerationButton, loop20, startEvolution))
+	stopEvolution := widget.NewButton("stop evolution", func() {
+		Ticker.Stop()
+	})
+
+	ww.SetContent(container.NewVBox(refresh, genRandButton, /*, add1RandomButton, showDeathTsButton,
+		showAliveTsButton, naturalSelectionTsButton, newGenerationButton, loop20*/startEvolution, stopEvolution))
 
 	w.SetContent(cont)
 
