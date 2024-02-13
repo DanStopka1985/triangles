@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/google/uuid"
+	"image/color"
 	"math"
 	"math/rand"
 	"sort"
@@ -21,7 +22,7 @@ type triangle struct {
 	generation  int
 	coordinates [6]float32 //todo float64
 	power       float64
-	color       int
+	color       color.NRGBA
 	uuid        uuid.UUID
 	haveMutagen bool
 }
@@ -78,6 +79,7 @@ func genRandomTriangle() triangle {
 
 	t.power = getPower(t)
 	t.generation = 0
+	t.color = _color[rand.Intn(6)]
 
 	return t
 }
