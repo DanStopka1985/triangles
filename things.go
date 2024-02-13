@@ -14,7 +14,7 @@ var (
 	deathTs             []triangle
 	mutationShareChance         = 1
 	maxPopulation               = 1000
-	evolutionSpeed              = time.Millisecond * 1000
+	evolutionSpeed              = time.Millisecond * 3
 	side                float32 = 400
 )
 
