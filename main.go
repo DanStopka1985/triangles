@@ -14,7 +14,7 @@ func main() {
 	Ticker := time.NewTicker(evolutionSpeed)
 	a := app.New()
 	w := a.NewWindow("triangles")
-	w.Resize(fyne.NewSize(500, 500))
+	w.Resize(fyne.NewSize(side+100, side+100))
 	//w.SetFullScreen(true)
 
 	ww := a.NewWindow("buttons")

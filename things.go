@@ -11,9 +11,10 @@ import (
 var (
 	aliveTs             []triangle
 	deathTs             []triangle
-	mutationShareChance = 1
-	maxPopulation       = 1000
-	evolutionSpeed      = time.Millisecond * 1000
+	mutationShareChance         = 1
+	maxPopulation               = 1000
+	evolutionSpeed              = time.Millisecond * 1000
+	side                float32 = 400
 )
 
 type triangle struct {
@@ -43,7 +44,7 @@ begin:
 			} else {
 				r.coordinates[i] = p.coordinates[i] - rand.Float32()*1
 			}
-			if r.coordinates[i] < 0 || r.coordinates[i] > 400 {
+			if r.coordinates[i] < 0 || r.coordinates[i] > side {
 				goto begin //if exit from window range - try new mutation
 			}
 		}
@@ -96,17 +97,17 @@ func sortAliveTs() {
 	})
 }
 
-func killLastTriangle() {
-	if len(aliveTs) == 0 {
-		return
-	}
-
-	deathTs = append(deathTs, aliveTs[len(aliveTs)-1])
-
-	if len(aliveTs) > 0 {
-		aliveTs = aliveTs[:len(aliveTs)-1]
-	}
-}
+//func killLastTriangle() {
+//	if len(aliveTs) == 0 {
+//		return
+//	}
+//
+//	deathTs = append(deathTs, aliveTs[len(aliveTs)-1])
+//
+//	if len(aliveTs) > 0 {
+//		aliveTs = aliveTs[:len(aliveTs)-1]
+//	}
+//}
 
 func naturalSelection() {
 	if len(aliveTs) <= maxPopulation {
