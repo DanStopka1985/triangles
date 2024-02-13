@@ -15,13 +15,14 @@ func main() {
 
 	a := app.New()
 	w := a.NewWindow("triangles")
-	w.Resize(fyne.NewSize(400, 400))
+	w.Resize(fyne.NewSize(500, 500))
+	//w.SetFullScreen(true)
 
 	ww := a.NewWindow("buttons")
 
 	cont := container.NewWithoutLayout()
 	gen5randButton := widget.NewButton("gen 5 random triangles", func() {
-		cnt := 5
+		cnt := 1000
 		for i := 0; i < cnt; i++ {
 			addNewRandomTriangle()
 		}
@@ -61,11 +62,13 @@ func main() {
 	})
 
 	loop20 := widget.NewButton("loop 20 generation selection", func() {
-		for i := 0; i < 20; i++ {
+		for i := 0; i < 2000000; i++ {
 			createNewGeneration()
 			naturalSelection()
+			time.Sleep(50 * time.Millisecond)
+			showTs(cont, aliveTs)
 		}
-		showTs(cont, aliveTs)
+		//showTs(cont, aliveTs)
 		max := float64(0)
 		ii := -1
 		for i := 0; i < len(aliveTs); i++ {
@@ -77,6 +80,7 @@ func main() {
 		}
 		log.Println(max)
 		log.Println(aliveTs[ii])
+		//showTs(cont, []triangle{aliveTs[ii]})
 	})
 
 	refresh := widget.NewButton("refresh", func() {
@@ -85,8 +89,18 @@ func main() {
 		showTs(cont, aliveTs)
 	})
 
+	startEvolution := widget.NewButton("evolution of triangles!", func() {
+		go func() {
+			for range time.Tick(time.Millisecond * 500) {
+				createNewGeneration()
+				naturalSelection()
+				showTs(cont, aliveTs)
+			}
+		}()
+	})
+
 	ww.SetContent(container.NewVBox(refresh, gen5randButton, add1RandomButton, killLastTriangleButton, showDeathTsButton,
-		showAliveTsButton, naturalSelectionTsButton, newGenerationButton, loop20))
+		showAliveTsButton, naturalSelectionTsButton, newGenerationButton, loop20, startEvolution))
 
 	w.SetContent(cont)
 
@@ -97,6 +111,6 @@ func main() {
 	//}()
 
 	ww.Resize(fyne.NewSize(400, 400))
-	ww.Show()
-	w.ShowAndRun()
+	w.Show()
+	ww.ShowAndRun()
 }

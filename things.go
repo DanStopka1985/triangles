@@ -11,7 +11,7 @@ var (
 	aliveTs             []triangle
 	deathTs             []triangle
 	mutationShareChance = 1
-	maxPopulation       = 20
+	maxPopulation       = 1000
 )
 
 type triangle struct {
@@ -27,12 +27,12 @@ func createTriangleChild(p triangle) triangle {
 begin:
 	r := p
 	r.haveMutagen = false
-	var genMutantIndex = rand.Intn(6)
-	if genMutantIndex == 0 {
+	var mutagenIx = rand.Intn(6)
+	if mutagenIx == 0 {
 
 	}
 	for i := 0; i < 6; i++ {
-		if i != genMutantIndex {
+		if i != mutagenIx {
 			r.coordinates[i] = p.coordinates[i]
 		} else if rand.Intn(mutationShareChance) == 0 {
 			r.haveMutagen = true
