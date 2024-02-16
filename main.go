@@ -5,7 +5,10 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	"log"
 	"math/rand"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -22,7 +25,7 @@ func main() {
 	cont := container.NewWithoutLayout()
 	genRandButton := widget.NewButton("gen random triangles", func() {
 		//Ticker.Stop()
-		cnt := 1000
+		cnt := startTsCnt
 		for i := 0; i < cnt; i++ {
 			addNewRandomTriangle()
 		}
@@ -105,7 +108,43 @@ func main() {
 		Ticker.Stop()
 	})
 
-	ww.SetContent(container.NewVBox(refresh, genRandButton, /*, add1RandomButton, showDeathTsButton,
+	maxPopulationEntry := widget.NewEntry()
+	maxPopulationEntry.SetText(strconv.Itoa(maxPopulation))
+	maxPopulationEntry.OnChanged = func(s string) {
+		log.Println("changed")
+	}
+
+	maxPopulationEntry.OnSubmitted = func(s string) {
+		newVal, err := strconv.Atoi(s)
+		if err != nil {
+			// ... handle error
+			panic(err)
+		}
+		maxPopulation = newVal
+		log.Println("submitted")
+	}
+
+	startTsCntEntry := widget.NewEntry()
+	startTsCntEntry.SetText(strconv.Itoa(startTsCnt))
+	startTsCntEntry.OnChanged = func(s string) {
+		log.Println("changed")
+	}
+
+	startTsCntEntry.OnSubmitted = func(s string) {
+		newVal, err := strconv.Atoi(s)
+		if err != nil {
+			startTsCnt = startTsCntDefault
+			startTsCntEntry.SetText(strconv.Itoa(startTsCnt))
+
+		}
+		startTsCnt = newVal
+		log.Println("submitted")
+	}
+
+	form := widget.NewForm(widget.NewFormItem("Population", maxPopulationEntry),
+		widget.NewFormItem("start triangles count (numeric)", startTsCntEntry))
+
+	ww.SetContent(container.NewVBox(form, refresh, genRandButton, /*, add1RandomButton, showDeathTsButton,
 		showAliveTsButton, naturalSelectionTsButton, newGenerationButton, loop20*/startEvolution, stopEvolution))
 
 	w.SetContent(cont)
@@ -115,6 +154,11 @@ func main() {
 	//		updateTime(clock)
 	//	}
 	//}()
+	w.SetOnClosed(
+		func() {
+			log.Println("window closed")
+			os.Exit(0)
+		})
 
 	ww.Resize(fyne.NewSize(400, 400))
 	w.Show()

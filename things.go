@@ -12,10 +12,12 @@ import (
 var (
 	aliveTs             []triangle
 	deathTs             []triangle
-	mutationShareChance         = 1
+	mutationShareChance         = 100
 	maxPopulation               = 1000
 	evolutionSpeed              = time.Millisecond * 3
 	side                float32 = 400
+	startTsCnt                  = 10
+	startTsCntDefault           = 10
 )
 
 type triangle struct {
@@ -41,9 +43,9 @@ begin:
 		} else if rand.Intn(mutationShareChance) == 0 {
 			r.haveMutagen = true
 			if rand.Intn(2) == 1 { //random mutation delta
-				r.coordinates[i] = p.coordinates[i] + rand.Float32()*1
+				r.coordinates[i] = p.coordinates[i] + rand.Float32()*10
 			} else {
-				r.coordinates[i] = p.coordinates[i] - rand.Float32()*1
+				r.coordinates[i] = p.coordinates[i] - rand.Float32()*10
 			}
 			if r.coordinates[i] < 0 || r.coordinates[i] > side {
 				goto begin //if exit from window range - try new mutation
