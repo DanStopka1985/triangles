@@ -28,9 +28,9 @@ func showTs(c *fyne.Container, ts []triangle) {
 
 func addTriangleToFyneContainer(c *fyne.Container, t triangle) {
 	__color := t.color
-	pos1 := fyne.Position{t.coordinates[0], t.coordinates[1]}
-	pos2 := fyne.Position{t.coordinates[2], t.coordinates[3]}
-	pos3 := fyne.Position{t.coordinates[4], t.coordinates[5]}
+	pos1 := fyne.Position{t.genes[0], t.genes[1]}
+	pos2 := fyne.Position{t.genes[2], t.genes[3]}
+	pos3 := fyne.Position{t.genes[4], t.genes[5]}
 
 	line1 := canvas.NewLine(color.Black)
 	line1.StrokeColor = __color

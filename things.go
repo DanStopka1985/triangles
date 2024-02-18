@@ -22,7 +22,7 @@ var (
 
 type triangle struct {
 	generation  int
-	coordinates [6]float32 //todo float64
+	genes       [6]float32
 	power       float64
 	color       color.NRGBA
 	uuid        uuid.UUID
@@ -39,15 +39,15 @@ begin:
 	}
 	for i := 0; i < 6; i++ {
 		if i != mutagenIx {
-			r.coordinates[i] = p.coordinates[i]
+			r.genes[i] = p.genes[i]
 		} else if rand.Intn(mutationShareChance) == 0 {
 			r.haveMutagen = true
 			if rand.Intn(2) == 1 { //random mutation delta
-				r.coordinates[i] = p.coordinates[i] + rand.Float32()*10
+				r.genes[i] = p.genes[i] + rand.Float32()*10
 			} else {
-				r.coordinates[i] = p.coordinates[i] - rand.Float32()*10
+				r.genes[i] = p.genes[i] - rand.Float32()*10
 			}
-			if r.coordinates[i] < 0 || r.coordinates[i] > side {
+			if r.genes[i] < 0 || r.genes[i] > side {
 				goto begin //if exit from window range - try new mutation
 			}
 		}
@@ -59,8 +59,8 @@ begin:
 }
 
 func getPower(t triangle) float64 {
-	return 0.5 * float64(math.Abs((float64(t.coordinates[2])-float64(t.coordinates[0]))*(float64(t.coordinates[5])-float64(t.coordinates[1]))-
-		(float64(t.coordinates[4])-float64(t.coordinates[0]))*(float64(t.coordinates[3])-float64(t.coordinates[1]))))
+	return 0.5 * float64(math.Abs((float64(t.genes[2])-float64(t.genes[0]))*(float64(t.genes[5])-float64(t.genes[1]))-
+		(float64(t.genes[4])-float64(t.genes[0]))*(float64(t.genes[3])-float64(t.genes[1]))))
 }
 
 func createNewGeneration() {
@@ -76,7 +76,7 @@ func genRandomTriangle() triangle {
 	var t triangle
 	t.uuid = uuid.New()
 	for i := 0; i < 6; i++ {
-		t.coordinates[i] = rand.Float32() * 400
+		t.genes[i] = rand.Float32() * 400
 	}
 
 	t.power = getPower(t)

@@ -14,7 +14,9 @@ var (
 	ctrlWin    fyne.Window
 	canvasCont *fyne.Container
 	inputForm  *widget.Form
+)
 
+var (
 	ticker *time.Ticker
 )
 
