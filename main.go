@@ -13,10 +13,11 @@ import (
 )
 
 var (
-	tsApp        fyne.App
-	canvasWindow fyne.Window
-	btnsWindow   fyne.Window
-	canvasCont   *fyne.Container
+	tsApp      fyne.App
+	canvasWin  fyne.Window
+	ctrlWin    fyne.Window
+	canvasCont *fyne.Container
+	inputForm  *widget.Form
 
 	ticker *time.Ticker
 )
@@ -25,69 +26,73 @@ func initialization() {
 	tsApp = app.New()
 	rand.Seed(time.Now().UnixNano())
 	ticker = time.NewTicker(evolutionSpeed)
-	canvasWindow = tsApp.NewWindow("triangles")
-	canvasWindow.Resize(fyne.NewSize(side+100, side+100))
-	btnsWindow = tsApp.NewWindow("buttons")
-	btnsWindow.Resize(fyne.NewSize(400, 400))
+	canvasWin = tsApp.NewWindow("triangles")
+	canvasWin.Resize(fyne.NewSize(side+100, side+100))
+	ctrlWin = tsApp.NewWindow("buttons")
+	ctrlWin.Resize(fyne.NewSize(400, 400))
 	canvasCont = container.NewWithoutLayout()
 }
 
-func main() {
-	initialization()
-
-	maxPopulationEntry := widget.NewEntry()
-	maxPopulationEntry.SetText(strconv.Itoa(maxPopulation))
-	maxPopulationEntry.OnChanged = func(s string) {
-		log.Println("changed")
+func maxPopulationEntry() *widget.Entry {
+	mp := widget.NewEntry()
+	mp.SetText(strconv.Itoa(maxPopulation))
+	mp.OnChanged = func(s string) {
 	}
 
-	maxPopulationEntry.OnSubmitted = func(s string) {
+	mp.OnSubmitted = func(s string) {
 		newVal, err := strconv.Atoi(s)
 		if err != nil {
-			// ... handle error
 			panic(err)
 		}
 		maxPopulation = newVal
-		log.Println("submitted")
+		mp.FocusLost()
 	}
 
-	startTsCntEntry := widget.NewEntry()
-	startTsCntEntry.SetText(strconv.Itoa(startTsCnt))
-	startTsCntEntry.OnChanged = func(s string) {
+	return mp
+}
+
+func startTsEntry() *widget.Entry {
+	e := widget.NewEntry()
+	e.SetText(strconv.Itoa(startTsCnt))
+	e.OnChanged = func(s string) {
 		log.Println("changed")
 	}
 
-	startTsCntEntry.OnSubmitted = func(s string) {
+	e.OnSubmitted = func(s string) {
 		newVal, err := strconv.Atoi(s)
 		if err != nil {
 			startTsCnt = startTsCntDefault
-			startTsCntEntry.SetText(strconv.Itoa(startTsCnt))
+			e.SetText(strconv.Itoa(startTsCnt))
 
 		}
 		startTsCnt = newVal
 		log.Println("submitted")
 	}
+	return e
+}
 
-	form := widget.NewForm(widget.NewFormItem("Population", maxPopulationEntry),
-		widget.NewFormItem("start triangles count (numeric)", startTsCntEntry))
+func main() {
+	initialization()
+	inputForm = widget.NewForm(widget.NewFormItem("Population", maxPopulationEntry()),
+		widget.NewFormItem("start triangles count (numeric)", startTsEntry()))
 
-	btnsWindow.SetContent(
+	ctrlWin.SetContent(
 		container.NewVBox(
-			form, refreshButton(),
+			inputForm, refreshButton(),
 			genRandomButton(),
 			startEvolutionButton(),
 			stopEvolutionButton(),
 		),
 	)
 
-	canvasWindow.SetContent(canvasCont)
+	canvasWin.SetContent(canvasCont)
 
-	canvasWindow.SetOnClosed(
+	canvasWin.SetOnClosed(
 		func() {
 			log.Println("window closed")
 			os.Exit(0)
 		})
 
-	canvasWindow.Show()
-	btnsWindow.ShowAndRun()
+	canvasWin.Show()
+	ctrlWin.ShowAndRun()
 }
