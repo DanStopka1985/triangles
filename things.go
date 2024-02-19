@@ -18,6 +18,7 @@ var (
 	side                float32 = 400
 	startTsCnt                  = 10
 	startTsCntDefault           = 10
+	visible_border              = false
 )
 
 type triangle struct {

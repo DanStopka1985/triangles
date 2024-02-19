@@ -10,6 +10,9 @@ import (
 )
 
 func drawBorder() {
+	if visible_border == false {
+		return
+	}
 	r := canvas.NewRectangle(color.White)
 	r.StrokeColor = color.Black
 	r.StrokeWidth = 1
