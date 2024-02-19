@@ -18,6 +18,7 @@ var _color = []color.NRGBA{
 
 func showTs(c *fyne.Container, ts []triangle) {
 	c.RemoveAll()
+	drawBorder()
 
 	for i := 0; i < len(ts); i++ {
 		addTriangleToFyneContainer(c, ts[i])
@@ -28,9 +29,9 @@ func showTs(c *fyne.Container, ts []triangle) {
 
 func addTriangleToFyneContainer(c *fyne.Container, t triangle) {
 	__color := t.color
-	pos1 := fyne.Position{t.genes[0], t.genes[1]}
-	pos2 := fyne.Position{t.genes[2], t.genes[3]}
-	pos3 := fyne.Position{t.genes[4], t.genes[5]}
+	pos1 := fyne.Position{t.genes[0] + 20, t.genes[1] + 20}
+	pos2 := fyne.Position{t.genes[2] + 20, t.genes[3] + 20}
+	pos3 := fyne.Position{t.genes[4] + 20, t.genes[5] + 20}
 
 	line1 := canvas.NewLine(color.Black)
 	line1.StrokeColor = __color

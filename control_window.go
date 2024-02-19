@@ -11,6 +11,18 @@ import (
 
 func genRandomButton() *widget.Button {
 	return widget.NewButton("gen random triangles", func() {
+		for i := 0; i < startTsCnt; i++ {
+			addNewRandomTriangle()
+		}
+		for i := 0; i < startTsCnt; i++ {
+			addTriangleToFyneContainer(canvasCont, aliveTs[i])
+		}
+		showTs(canvasCont, aliveTs)
+	})
+}
+
+func genMiniTsButton() *widget.Button {
+	return widget.NewButton("gen mini triangles", func() {
 		cnt := startTsCnt
 		for i := 0; i < cnt; i++ {
 			addNewRandomTriangle()
