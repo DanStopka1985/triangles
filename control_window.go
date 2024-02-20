@@ -46,21 +46,23 @@ func refreshButton() *widget.Button {
 }
 
 func startEvolutionButton() *widget.Button {
-	return widget.NewButton("start evolution", func() {
+	return widget.NewButton("start/pause evolution", func() {
+		if evolutionSterted {
+			evolutionSterted = false
+			ticker.Stop()
+			return
+		}
+		evolutionSterted = true
 		ticker = time.NewTicker(evolutionSpeed)
+
 		go func() {
+
 			for range ticker.C {
 				createNewGeneration()
 				naturalSelection()
 				showTs(canvasCont, aliveTs)
 			}
 		}()
-	})
-}
-
-func stopEvolutionButton() *widget.Button {
-	return widget.NewButton("stop evolution", func() {
-		ticker.Stop()
 	})
 }
 
@@ -127,7 +129,6 @@ func ctrlWinInit() {
 			genRandomButton(),
 			genMiniTsButton(),
 			startEvolutionButton(),
-			stopEvolutionButton(),
 		),
 	)
 	ctrlWin.Show()

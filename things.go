@@ -19,6 +19,7 @@ var (
 	startTsCnt                  = 10
 	startTsCntDefault           = 10
 	visible_border              = false
+	evolutionSterted            = false
 )
 
 type triangle struct {
@@ -72,8 +73,8 @@ func createNewGeneration() {
 		if rand.Intn(10) == 1 {
 			aliveTs = append(aliveTs, createTriangleChild(aliveTs[i]))
 		}
-
 	}
+	time.Sleep(0 * time.Millisecond)
 }
 
 func genRandomTriangle() triangle {
