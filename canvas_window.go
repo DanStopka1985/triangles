@@ -10,6 +10,8 @@ import (
 )
 
 func drawBorder() {
+	//todo bug fix
+	//todo border size to var
 	if visible_border == false {
 		return
 	}
@@ -17,7 +19,7 @@ func drawBorder() {
 	r.StrokeColor = color.Black
 	r.StrokeWidth = 1
 	r.Resize(fyne.NewSize(side+4, side+4))
-	r.Move(fyne.Position{X: 19 - 2, Y: 19 - 2})
+	r.Move(fyne.Position{X: 20 - 3, Y: 19 - 2})
 	canvasCont.Add(r)
 }
 

@@ -12,9 +12,9 @@ import (
 var (
 	aliveTs             []triangle
 	deathTs             []triangle
-	mutationShareChance         = 100
+	mutationShareChance         = 1000
 	maxPopulation               = 1000
-	evolutionSpeed              = time.Millisecond * 3
+	evolutionSpeed              = time.Millisecond * 5
 	side                float32 = 400
 	startTsCnt                  = 10
 	startTsCntDefault           = 10
@@ -44,12 +44,12 @@ begin:
 		} else if rand.Intn(mutationShareChance) == 0 {
 			r.haveMutagen = true
 			if rand.Intn(2) == 1 { //random mutation delta
-				r.genes[i] = p.genes[i] + rand.Float32()*10
+				r.genes[i] = p.genes[i] + rand.Float32()*10 //+
 			} else {
-				r.genes[i] = p.genes[i] - rand.Float32()*10
+				r.genes[i] = p.genes[i] - rand.Float32()*10 //-
 			}
 			if r.genes[i] < 0 || r.genes[i] > side {
-				goto begin //if exit from window range - try new mutation
+				goto begin //if exit from window range - try mutation again
 			}
 		}
 	}
@@ -68,7 +68,10 @@ func createNewGeneration() {
 	sortAliveTs()
 	cnt := len(aliveTs)
 	for i := 0; i < cnt; i++ {
-		aliveTs = append(aliveTs, createTriangleChild(aliveTs[i]))
+		//new born chance
+		if rand.Intn(10) == 1 {
+			aliveTs = append(aliveTs, createTriangleChild(aliveTs[i]))
+		}
 
 	}
 }
@@ -77,7 +80,7 @@ func genRandomTriangle() triangle {
 	var t triangle
 	t.uuid = uuid.New()
 	for i := 0; i < 6; i++ {
-		t.genes[i] = rand.Float32() * 400
+		t.genes[i] = rand.Float32() * side
 	}
 
 	t.power = getPower(t)
@@ -87,32 +90,25 @@ func genRandomTriangle() triangle {
 	return t
 }
 
-/*func genRandomTriangles(cnt int) []triangle {
-	r := make([]triangle, 0)
-	for i := 0; i < cnt; i++ {
-		t := genRandomTriangle()
-		r = append(r, t)
+func createTriangle(genes [6]float32, color color.NRGBA) triangle {
+	var t triangle
+	t.uuid = uuid.New()
+	for i := 0; i < 6; i++ {
+		t.genes[i] = genes[i]
 	}
-	return r
-}*/
+
+	t.power = getPower(t)
+	t.generation = 0
+	t.color = color
+
+	return t
+}
 
 func sortAliveTs() {
 	sort.Slice(aliveTs, func(i, j int) bool {
 		return aliveTs[i].power > aliveTs[j].power
 	})
 }
-
-//func killLastTriangle() {
-//	if len(aliveTs) == 0 {
-//		return
-//	}
-//
-//	deathTs = append(deathTs, aliveTs[len(aliveTs)-1])
-//
-//	if len(aliveTs) > 0 {
-//		aliveTs = aliveTs[:len(aliveTs)-1]
-//	}
-//}
 
 func naturalSelection() {
 	if len(aliveTs) <= maxPopulation {
@@ -122,9 +118,12 @@ func naturalSelection() {
 	sortAliveTs()
 	deathTs = append(deathTs, aliveTs[maxPopulation+1:]...)
 	aliveTs = aliveTs[:maxPopulation]
-
 }
 
 func addNewRandomTriangle() {
 	aliveTs = append(aliveTs, genRandomTriangle())
+}
+
+func addNewTriangle(genes [6]float32, color color.NRGBA) {
+	aliveTs = append(aliveTs, createTriangle(genes, color))
 }
