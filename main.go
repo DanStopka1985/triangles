@@ -18,6 +18,9 @@ func initialization() {
 }
 
 func main() {
+
 	initialization()
+
+	getChanceTest()
 	tsApp.Run()
 }
